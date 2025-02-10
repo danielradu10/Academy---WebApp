@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package Authentication;
+
+service AuthService{
+  rpc authenticate(AuthenticationMessage) returns (AuthenticationResponse) {}
+  rpc validate(ValidateMessage) returns (ValidateResponse) {}
+  rpc invalidate(InvalidateMessage) returns (InvalidateResponse) {}
+}
+
+message AuthenticationMessage{
+  string username = 1;
+  string password = 2;
+}
+
+message AuthenticationResponse{
+  string jwt = 1;
+}
+
+
+message ValidateMessage{
+  string jwt = 1;
+}
+
+message ValidateResponse{
+  bool valid = 1;
+  string sub = 2;
+  string role = 3;
+  string email = 4;
+}
+
+
+message InvalidateMessage{
+  string jwt = 1;
+}
+
+message InvalidateResponse{
+  bool successful = 1;
+}
+

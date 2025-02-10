@@ -1,0 +1,95 @@
+version: '3.7'
+
+services:
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: acadpassword
+      MYSQL_DATABASE: academia
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: password1
+    networks:
+      - my-network
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "ls || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
+  redis:
+    image: redis
+    networks:
+      - my-network
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: mongo
+    networks:
+      - my-network
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: username
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb_data:/data/db
+
+  auth-service:
+    build: ./AuthService
+    networks:
+      - my-network
+    ports:
+      - "50051:50051"
+      - "8000:8000"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  frontend:
+    image: academia-frontend  
+    networks:
+      - my-network
+    ports:
+      - "3000:80"
+
+  materiale:
+    build: ./Materiale
+    networks:
+      - my-network
+    ports:
+      - "8001:8001"
+    depends_on:
+      mongodb:
+        condition: service_started
+    environment:
+      MONGO_URI: mongodb://username:password@mongodb:27017/admin
+      
+  profi-studenti:
+    image: profi-studenti:latest
+    networks:
+      - my-network
+    ports:
+      - "8080:8080"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/academia
+      SPRING_DATASOURCE_USERNAME: user1
+      SPRING_DATASOURCE_PASSWORD: password1
+
+volumes:
+  mariadb_data:
+  mongodb_data:
+
+networks:
+  my-network:
+    driver: bridge

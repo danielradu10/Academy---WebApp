@@ -1,0 +1,19 @@
+html, body {
+  height: 100%; /* Asigură că pagina ocupă întreg spațiul */
+  margin: 0; /* Elimină marginile implicite */
+  display: flex;
+  justify-content: center; /* Centrează pe orizontală */
+  align-items: center; /* Centrează pe verticală */
+  font-family: Arial, sans-serif; /* Stil opțional */
+}
+
+.App {
+  text-align: center; /* Aliniază conținutul pe orizontală */
+  max-width: 800px; /* Dimensiunea maximă pentru conținut */
+  width: 100%; /* Se adaptează la dimensiunea ferestrei */
+  background-color: #f9f9f9; /* Opțional: fundal */
+  border: 1px solid #ccc; /* Opțional: margini */
+  padding: 20px; /* Spațiu interior */
+  border-radius: 10px; /* Colțuri rotunjite */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Umbră opțională */
+}
